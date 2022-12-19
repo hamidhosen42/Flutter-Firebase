@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, override_on_non_overriding_member, unused_field, prefer_final_fields, use_key_in_widget_constructors, body_might_complete_normally_nullable
 
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase/firbase/auth.dart';
 import 'package:flutter_firebase/ui/auth/signup_screen.dart';
 import 'package:flutter_firebase/widgets/round_button.dart';
 import 'package:flutter_loading_animation_kit/flutter_loading_animation_kit.dart';
@@ -136,9 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               RoundButton("Login", () {
                 if (_formKey.currentState!.validate()) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Processing Data')),
-                  );
+                  Auth().login(_emailController.text, _passwordController.text, context);
                 }
               }),
               Row(

@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, override_on_non_overriding_member, unused_field, prefer_final_fields, use_key_in_widget_constructors, body_might_complete_normally_nullable
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase/firbase/auth.dart';
 import 'package:flutter_firebase/ui/auth/login_screen.dart';
 import 'package:flutter_firebase/widgets/round_button.dart';
 import 'package:flutter_loading_animation_kit/flutter_loading_animation_kit.dart';
@@ -33,7 +35,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-         leading: IconButton(
+        leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
@@ -75,7 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }
                       },
                       controller: _emailController,
-                      keyboardType:TextInputType.emailAddress,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         hintText: 'Enter your email',
                         suffixIcon: Icon(Icons.email_outlined),
@@ -104,7 +106,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       onChanged: (value) {
                         //Do something with the user input.
                       },
-                       validator: (value) {
+                      validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "Enter Password";
                         } else {
@@ -140,19 +142,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
               SizedBox(
                 height: 20,
               ),
-              RoundButton("SignUp", (){
+              RoundButton("SignUp", () {
                 if(_formKey.currentState!.validate())
                 {
-                  
+                   Auth().registration(
+                    _emailController.text, _passwordController.text, context);
                 }
               }),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("Already have an account?"),
-                  TextButton(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
-                  }, child: Text("Login"))
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginScreen()));
+                      },
+                      child: Text("Login"))
                 ],
               )
             ],
