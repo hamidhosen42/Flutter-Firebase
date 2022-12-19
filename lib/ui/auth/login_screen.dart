@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, override_on_non_overriding_member, unused_field, prefer_final_fields, use_key_in_widget_constructors, body_might_complete_normally_nullable
 
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase/ui/auth/signup_screen.dart';
 import 'package:flutter_firebase/widgets/round_button.dart';
 import 'package:flutter_loading_animation_kit/flutter_loading_animation_kit.dart';
 
@@ -68,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         }
                       },
                       controller: _emailController,
-                      keyboardType:TextInputType.emailAddress,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         hintText: 'Enter your email',
                         suffixIcon: Icon(Icons.email_outlined),
@@ -97,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onChanged: (value) {
                         //Do something with the user input.
                       },
-                       validator: (value) {
+                      validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "Enter Password";
                         } else {
@@ -133,17 +134,25 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: 20,
               ),
-              RoundButton("Login", (){
-                if(_formKey.currentState!.validate())
-                {
-                  
+              RoundButton("Login", () {
+                if (_formKey.currentState!.validate()) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Processing Data')),
+                  );
                 }
               }),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("Don't have an account?"),
-                  TextButton(onPressed: (){}, child: Text("Sign Up"))
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignUpScreen()));
+                      },
+                      child: Text("Sign Up"))
                 ],
               )
             ],

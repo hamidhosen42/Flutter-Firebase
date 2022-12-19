@@ -7,6 +7,7 @@ import 'package:flutter_firebase/ui/auth/login_screen.dart';
 class SplashServices {
 
   static Color appBarColor = Colors.green;
+  
   void isLogin(BuildContext context) {
     Timer(
         Duration(seconds: 3),
