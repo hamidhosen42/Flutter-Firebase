@@ -1,0 +1,83 @@
+// ignore_for_file: prefer_const_constructors, override_on_non_overriding_member
+
+import 'package:flutter/material.dart';
+import 'package:flutter_firebase/firebase_services/splash_services.dart';
+import 'package:flutter_firebase/widgets/round_button.dart';
+import 'package:flutter_loading_animation_kit/flutter_loading_animation_kit.dart';
+
+class LoginScreen extends StatefulWidget {
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose;
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        // backgroundColor: SplashServices.appBarColor,
+        automaticallyImplyLeading: false,
+        title: Text(
+          "Login",
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 80,
+            ),
+            FourCirclePulse(
+              circleColor: Colors.deepPurple, //The color of the circles
+              dimension: 100.0, // The size of the widget.
+              turns: 5, //Turns in each loop
+              loopDuration: const Duration(seconds: 5), // Duration of each loop
+              curve: Curves.linear, //Curve of the animation
+            ),
+            SizedBox(
+              height: 70.0,
+            ),
+            TextField(
+              onChanged: (value) {
+                //Do something with the user input.
+              },
+              decoration: InputDecoration(
+                hintText: 'Enter your email:',
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.green, width: 1.0),
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.green, width: 2.0),
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            RoundButton("Login", () {})
+          ],
+        ),
+      ),
+    );
+  }
+}
