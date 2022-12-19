@@ -1,7 +1,6 @@
-// ignore_for_file: prefer_const_constructors, override_on_non_overriding_member
+// ignore_for_file: prefer_const_constructors, override_on_non_overriding_member, unused_field, prefer_final_fields, use_key_in_widget_constructors, body_might_complete_normally_nullable
 
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase/firebase_services/splash_services.dart';
 import 'package:flutter_firebase/widgets/round_button.dart';
 import 'package:flutter_loading_animation_kit/flutter_loading_animation_kit.dart';
 
@@ -11,14 +10,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
     super.dispose;
-    emailController.dispose();
-    passwordController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
   }
 
   @override
@@ -35,47 +35,119 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 80,
-            ),
-            FourCirclePulse(
-              circleColor: Colors.deepPurple, //The color of the circles
-              dimension: 100.0, // The size of the widget.
-              turns: 5, //Turns in each loop
-              loopDuration: const Duration(seconds: 5), // Duration of each loop
-              curve: Curves.linear, //Curve of the animation
-            ),
-            SizedBox(
-              height: 70.0,
-            ),
-            TextField(
-              onChanged: (value) {
-                //Do something with the user input.
-              },
-              decoration: InputDecoration(
-                hintText: 'Enter your email:',
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green, width: 1.0),
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green, width: 2.0),
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 80,
+              ),
+              FourCirclePulse(
+                circleColor: Colors.deepPurple, //The color of the circles
+                dimension: 100.0, // The size of the widget.
+                turns: 5, //Turns in each loop
+                loopDuration:
+                    const Duration(seconds: 5), // Duration of each loop
+                curve: Curves.linear, //Curve of the animation
+              ),
+              SizedBox(
+                height: 70.0,
+              ),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      onChanged: (value) {
+                        //Do something with the user input.
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Enter Email";
+                        } else {
+                          return null;
+                        }
+                      },
+                      controller: _emailController,
+                      keyboardType:TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        hintText: 'Enter your email',
+                        suffixIcon: Icon(Icons.email_outlined),
+                        prefixIcon: Icon(Icons.person),
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 20.0, horizontal: 20.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.green, width: 1.0),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.green, width: 2.0),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    TextFormField(
+                      onChanged: (value) {
+                        //Do something with the user input.
+                      },
+                       validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Enter Password";
+                        } else {
+                          return null;
+                        }
+                      },
+                      controller: _passwordController,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        hintText: 'Enter your password',
+                        suffixIcon: Icon(Icons.remove_red_eye_sharp),
+                        prefixIcon: Icon(Icons.lock_open_outlined),
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 20.0, horizontal: 20.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.green, width: 1.0),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.green, width: 2.0),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            RoundButton("Login", () {})
-          ],
+              SizedBox(
+                height: 20,
+              ),
+              RoundButton("Login", (){
+                if(_formKey.currentState!.validate())
+                {
+                  
+                }
+              }),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Don't have an account?"),
+                  TextButton(onPressed: (){}, child: Text("Sign Up"))
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
