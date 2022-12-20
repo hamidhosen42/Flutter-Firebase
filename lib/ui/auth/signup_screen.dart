@@ -1,9 +1,10 @@
-// ignore_for_file: prefer_const_constructors, override_on_non_overriding_member, unused_field, prefer_final_fields, use_key_in_widget_constructors, body_might_complete_normally_nullable
+// ignore_for_file: prefer_const_constructors, override_on_non_overriding_member, unused_field, prefer_final_fields, use_key_in_widget_constructors, body_might_complete_normally_nullable, unused_element, dead_code
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/firbase/auth.dart';
 import 'package:flutter_firebase/ui/auth/login_screen.dart';
+import 'package:flutter_firebase/utils/utils.dart';
 import 'package:flutter_firebase/widgets/round_button.dart';
 import 'package:flutter_loading_animation_kit/flutter_loading_animation_kit.dart';
 
@@ -16,6 +17,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  bool loading = false;
 
   @override
   void dispose() {
@@ -115,6 +118,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       },
                       controller: _passwordController,
                       keyboardType: TextInputType.text,
+                      obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'Enter your password',
                         suffixIcon: Icon(Icons.remove_red_eye_sharp),
@@ -142,11 +146,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               SizedBox(
                 height: 20,
               ),
-              RoundButton("SignUp", () {
-                if(_formKey.currentState!.validate())
-                {
-                   Auth().registration(
-                    _emailController.text, _passwordController.text, context);
+              RoundButton("SignUp", loading, () {
+                if (_formKey.currentState!.validate()) {
+                  signUp();
                 }
               }),
               Row(
@@ -168,5 +170,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  void signUp() {
+    setState(() {
+      loading = true;
+    });
+    Auth()
+        .registration(_emailController.text, _passwordController.text, context)
+        .then((value) {
+      loading = false;
+    }).onError((error, stackTrace) {
+      Utils().toastMessage(error.toString());
+      setState(() {
+        loading = false;
+      });
+    });
   }
 }

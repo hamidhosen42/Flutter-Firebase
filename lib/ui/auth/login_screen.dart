@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/firbase/auth.dart';
 import 'package:flutter_firebase/ui/auth/signup_screen.dart';
+import 'package:flutter_firebase/utils/utils.dart';
 import 'package:flutter_firebase/widgets/round_button.dart';
 import 'package:flutter_loading_animation_kit/flutter_loading_animation_kit.dart';
 
@@ -15,6 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool loading = false;
 
   @override
   void dispose() {
@@ -108,6 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       controller: _passwordController,
                       keyboardType: TextInputType.text,
+                      obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'Enter your password',
                         suffixIcon: Icon(Icons.remove_red_eye_sharp),
@@ -135,9 +138,9 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: 20,
               ),
-              RoundButton("Login", () {
+              RoundButton("Login", loading, () {
                 if (_formKey.currentState!.validate()) {
-                  Auth().login(_emailController.text, _passwordController.text, context);
+                  login();
                 }
               }),
               Row(
@@ -159,5 +162,22 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void login() {
+    setState(() {
+      loading = true;
+    });
+    Auth()
+        .login(_emailController.text, _passwordController.text, context)
+        .onError((error, stackTrace) => Utils().toastMessage(error.toString()))
+        .then((value) {
+      loading = false;
+    }).onError((error, stackTrace) {
+      Utils().toastMessage(error.toString());
+      setState(() {
+        loading = false;
+      });
+    });
   }
 }

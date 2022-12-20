@@ -1,10 +1,11 @@
-// ignore_for_file: non_constant_identifier_names, avoid_print, unused_local_variable
+// ignore_for_file: non_constant_identifier_names, avoid_print, unused_local_variable, prefer_const_constructors
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_firebase/ui/home_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Auth {
-
   // !---------------------sign Up ------------------
   Future registration(String emailAddress, String password, context) async {
     try {
@@ -15,6 +16,8 @@ class Auth {
       var authCredential = userCredential.user;
       if (authCredential!.uid.isNotEmpty) {
         Fluttertoast.showToast(msg: 'Registration Successfull');
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
       } else {
         print("sign up failed");
       }
@@ -41,7 +44,8 @@ class Auth {
       print(authCredential);
       if (authCredential!.uid.isNotEmpty) {
         Fluttertoast.showToast(msg: 'Login Successfull');
-        // Get.toNamed(mainHomeScreen);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
       } else {
         print("sign up failed");
       }
