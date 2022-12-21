@@ -32,18 +32,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       appBar: AppBar(
         // backgroundColor: SplashServices.appBarColor,
-        automaticallyImplyLeading: false,
+        // automaticallyImplyLeading: false,
         title: Text(
           "SignUp",
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back),
-        ),
+        // leading: IconButton(
+        //   onPressed: () {
+        //     Navigator.pop(context);
+        //   },
+        //   icon: Icon(Icons.arrow_back),
+        // ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),

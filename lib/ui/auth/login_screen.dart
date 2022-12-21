@@ -1,7 +1,9 @@
-// ignore_for_file: prefer_const_constructors, override_on_non_overriding_member, unused_field, prefer_final_fields, use_key_in_widget_constructors, body_might_complete_normally_nullable
+// ignore_for_file: prefer_const_constructors, override_on_non_overriding_member, unused_field, prefer_final_fields, use_key_in_widget_constructors, body_might_complete_normally_nullable, avoid_unnecessary_containers, prefer_const_literals_to_create_immutables
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/firbase/auth.dart';
+import 'package:flutter_firebase/ui/auth/login_with_phone_number.dart';
 import 'package:flutter_firebase/ui/auth/signup_screen.dart';
 import 'package:flutter_firebase/utils/utils.dart';
 import 'package:flutter_firebase/widgets/round_button.dart';
@@ -33,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
         automaticallyImplyLeading: false,
         title: Text(
           "Login",
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -156,7 +158,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       child: Text("Sign Up"))
                 ],
-              )
+              ),
+              SizedBox(
+                height: 30.0,
+              ),
+              InkWell(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginWithPhoneNumber()));
+                },
+                child: Container(
+                  height: 50.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    border: Border.all(
+                      color: Colors.green
+                    )
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Login with Phone"),
+                      SizedBox(width: 10,),
+                      Icon(Icons.call_rounded,color: Colors.deepPurple,)
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -172,8 +199,12 @@ class _LoginScreenState extends State<LoginScreen> {
         .login(_emailController.text, _passwordController.text, context)
         .onError((error, stackTrace) => Utils().toastMessage(error.toString()))
         .then((value) {
+      final user = FirebaseAuth.instance.currentUser;
+      final x = user?.email;
+      Utils().toastMessage(x.toString());
       loading = false;
     }).onError((error, stackTrace) {
+      debugPrint(error.toString());
       Utils().toastMessage(error.toString());
       setState(() {
         loading = false;
