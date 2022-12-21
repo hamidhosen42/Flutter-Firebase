@@ -66,7 +66,7 @@ class _LoginWithPhoneNumberState extends State<LoginWithPhoneNumber> {
                     controller: _phoneNumbercontroller,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
-                      hintText: '+088 123 2422 323',
+                      hintText: '+088 123 4567 89',
                       suffixIcon: Icon(Icons.call),
                       prefixIcon: Icon(Icons.person),
                       contentPadding: EdgeInsets.symmetric(
@@ -89,11 +89,18 @@ class _LoginWithPhoneNumberState extends State<LoginWithPhoneNumber> {
                   ),
                   RoundButton("Login", loading, () {
                     if (_formKey.currentState!.validate()) {
+                      setState(() {
+                        loading = true;
+                      });
                       auth
                         ..verifyPhoneNumber(
-                          phoneNumber: _phoneNumbercontroller.text,
+                          phoneNumber: "+88${_phoneNumbercontroller.text}",
                           verificationCompleted:
-                              (PhoneAuthCredential credential) {},
+                              (_) {
+                                setState(() {
+                              loading = false;
+                            });
+                              },
                           verificationFailed: (e) {
                             Utils().toastMessage(e.toString());
                           },
@@ -102,31 +109,22 @@ class _LoginWithPhoneNumberState extends State<LoginWithPhoneNumber> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => VerifyCodeScreen()));
+                                    builder: (context) => VerifyCodeScreen(
+                                          verificationId: verificationId,
+                                        )));
+                                        setState(() {
+                              loading = false;
+                            });
                           },
                           codeAutoRetrievalTimeout: (verificationId) {
+                            setState(() {
+                              loading = true;
+                            });
                             Utils().toastMessage(verificationId.toString());
                           },
                         );
                     }
                   }),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Don't have an account?"),
-                      TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SignUpScreen()));
-                          },
-                          child: Text("Sign Up"))
-                    ],
-                  ),
-                  SizedBox(
-                    height: 30.0,
-                  ),
                 ],
               ),
             ),
@@ -135,25 +133,4 @@ class _LoginWithPhoneNumberState extends State<LoginWithPhoneNumber> {
       ),
     );
   }
-
-  // void login() {
-  //   setState(() {
-  //     loading = true;
-  //   });
-  //   Auth()
-  //       .login(_emailController.text, _passwordController.text, context)
-  //       .onError((error, stackTrace) => Utils().toastMessage(error.toString()))
-  //       .then((value) {
-  //     final user = FirebaseAuth.instance.currentUser;
-  //     final x = user?.email;
-  //     Utils().toastMessage(x.toString());
-  //     loading = false;
-  //   }).onError((error, stackTrace) {
-  //     debugPrint(error.toString());
-  //     Utils().toastMessage(error.toString());
-  //     setState(() {
-  //       loading = false;
-  //     });
-  //   });
-  // }
 }
