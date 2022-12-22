@@ -20,12 +20,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
 
-  @override
-  void dispose() {
-    super.dispose;
-    _emailController.dispose();
-    _passwordController.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose;
+  //   _emailController.dispose();
+  //   _passwordController.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {

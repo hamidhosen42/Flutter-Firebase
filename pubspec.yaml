@@ -43,6 +43,7 @@ dependencies:
   flutter_loading_animation_kit: 
   flutter_screenutil: 
   fluttertoast: 
+  firebase_database: 
 
 dev_dependencies:
   flutter_test:

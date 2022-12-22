@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors, override_on_non_overriding_member, unused_field, prefer_final_fields, use_key_in_widget_constructors, body_might_complete_normally_nullable, unused_element, dead_code
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/firbase/auth.dart';
 import 'package:flutter_firebase/ui/auth/login_screen.dart';
@@ -20,12 +19,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool loading = false;
 
-  @override
-  void dispose() {
-    super.dispose;
-    _emailController.dispose();
-    _passwordController.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose;
+  //   _emailController.dispose();
+  //   _passwordController.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
