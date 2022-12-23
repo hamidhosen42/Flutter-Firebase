@@ -106,46 +106,48 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (searchFilter.text.isEmpty) {
                   return SizeTransition(
                     sizeFactor: animation,
-                    child: ListTile(
-                      trailing: PopupMenuButton(
-                          icon: Icon(Icons.more_vert),
-                          itemBuilder: (context) => [
-                                PopupMenuItem(
-                                  value: 1,
-                                  child: ListTile(
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      showMyDialog(title, subtitle, id);
-                                    },
-                                    leading: Icon(Icons.edit),
-                                    title: Text("Edit"),
-                                  ),
-                                ),
-                                PopupMenuItem(
-                                  value: 1,
-                                  child: InkWell(
-                                    onTap: () {
-                                      databaseRef
-                                          .child(id)
-                                          .remove()
-                                          .then((value) {
-                                        Utils().toastMessage("Post Deleted");
-                                        Navigator.pop(context);
-                                      }).onError((error, stackTrace) {
-                                        Utils().toastMessage(error.toString());
-                                      });
-                                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: ListTile(
+                        trailing: PopupMenuButton(
+                            icon: Icon(Icons.more_vert),
+                            itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    value: 1,
                                     child: ListTile(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        showMyDialog(title, subtitle, id);
+                                      },
+                                      leading: Icon(Icons.edit),
+                                      title: Text("Edit"),
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    value: 1,
+                                    child: ListTile(
+                                      onTap: () {
+                                        databaseRef
+                                            .child(id)
+                                            .remove()
+                                            .then((value) {
+                                          Utils().toastMessage("Post Deleted");
+                                          Navigator.pop(context);
+                                        }).onError((error, stackTrace) {
+                                          Utils().toastMessage(error.toString());
+                                        });
+                                      },
                                       leading: Icon(Icons.delete),
                                       title: Text("Delete"),
                                     ),
-                                  ),
-                                )
-                              ]),
-                      title:
-                          Text('${snapshot.child('title').value.toString()}'),
-                      subtitle:
-                          Text(snapshot.child("subtitle").value.toString()),
+                                  )
+                                ]),
+                        title:
+                            Text('${snapshot.child('title').value.toString()}'),
+                        subtitle:
+                            Text(snapshot.child("subtitle").value.toString()),
+                          
+                      ),
                     ),
                   );
                 } else if (title
