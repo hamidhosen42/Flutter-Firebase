@@ -1,36 +1,39 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, unused_local_variable, unnecessary_string_interpolations, avoid_unnecessary_containers
+// ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase/ui/HomePage/add_post.dart';
-import 'package:flutter_firebase/ui/auth/login_screen.dart';
-import 'package:flutter_firebase/utils/utils.dart';
+import 'package:flutter_firebase/ui/firestore/add_firestore_data.dart';
 
-import '../../widgets/round_button.dart';
+import '../../utils/utils.dart';
+import '../HomePage/add_post.dart';
+import '../auth/login_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class FireStoreScreen extends StatefulWidget {
+  const FireStoreScreen({super.key});
+
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<FireStoreScreen> createState() => _FireStoreScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _FireStoreScreenState extends State<FireStoreScreen> {
   final searchFilter = TextEditingController();
   bool loading = false;
   final _formKey = GlobalKey<FormState>();
   final _postEditController = TextEditingController();
   final _postEditSubController = TextEditingController();
 
-  final databaseRef = FirebaseDatabase.instance.ref('Post');
+  final firestore = FirebaseFirestore.instance.collection('users').snapshots();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         // ignore: prefer_const_literals_to_create_immutables
-        automaticallyImplyLeading: false,
-        title: Text("Post"),
+        automaticallyImplyLeading: true,
+        title: Text("FireStore"),
         centerTitle: true,
         actions: [
           IconButton(
@@ -47,11 +50,20 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 10,
           ),
         ],
+        // leading: IconButton(
+        //         onPressed: () {
+        //           Navigator.push(
+        //             context,
+        //             MaterialPageRoute(builder: (context) => FireStoreScreen()),
+        //           );
+        //         },
+        //         icon: Icon(Icons.next_plan_outlined)
+        //       ),
       ),
       body: Column(
         children: [
           SizedBox(
-            height: 10,
+            height: 20,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -92,89 +104,53 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(
             height: 10,
           ),
+          StreamBuilder<QuerySnapshot>(
+            stream: firestore,
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return Text('Something went wrong');
+              }
 
-          // !animated realtime data-------------------------
-          Expanded(
-            child: FirebaseAnimatedList(
-              query: databaseRef, defaultChild: Text("Loading"),
-              // reverse: _anchorToBottom,
-              itemBuilder: (context, snapshot, animation, index) {
-                final title = snapshot.child("title").value.toString();
-                final subtitle = snapshot.child("subtitle").value.toString();
-                final id = snapshot.child('id').value.toString();
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              }
 
-                if (searchFilter.text.isEmpty) {
-                  return SizeTransition(
-                    sizeFactor: animation,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: ListTile(
-                        trailing: PopupMenuButton(
-                            icon: Icon(Icons.more_vert),
-                            itemBuilder: (context) => [
-                                  PopupMenuItem(
-                                    value: 1,
-                                    child: ListTile(
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        showMyDialog(title, subtitle, id);
-                                      },
-                                      leading: Icon(Icons.edit),
-                                      title: Text("Edit"),
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: 1,
-                                    child: ListTile(
-                                      onTap: () {
-                                        databaseRef
-                                            .child(id)
-                                            .remove()
-                                            .then((value) {
-                                          Utils().toastMessage("Post Deleted");
-                                          Navigator.pop(context);
-                                        }).onError((error, stackTrace) {
-                                          Utils().toastMessage(error.toString());
-                                        });
-                                      },
-                                      leading: Icon(Icons.delete),
-                                      title: Text("Delete"),
-                                    ),
-                                  )
-                                ]),
-                        title:
-                            Text('${snapshot.child('title').value.toString()}'),
-                        subtitle:
-                            Text(snapshot.child("subtitle").value.toString()),
-                          
-                      ),
-                    ),
-                  );
-                } else if (title
-                    .toLowerCase()
-                    .contains(searchFilter.text.toLowerCase().toLowerCase())) {
-                  return SizeTransition(
-                    sizeFactor: animation,
-                    child: ListTile(
-                      iconColor: Colors.red,
-                      title:
-                          Text('${snapshot.child('title').value.toString()}'),
-                      subtitle:
-                          Text(snapshot.child("subtitle").value.toString()),
-                    ),
-                  );
-                } else {
-                  return Container();
-                }
-              },
-            ),
+              // return Expanded(
+              //   child: ListView(
+              //     children: snapshot.data!.docs.map((DocumentSnapshot document) {
+              //       Map<String, dynamic> data =
+              //           document.data()! as Map<String, dynamic>;
+              //       return ListTile(
+              //         title: Text(data['title']),
+              //         subtitle: Text(data['subtitle']),
+              //       );
+              //     }).toList(),
+              //   ),
+              // );
+
+              // !other option---------------
+
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder:(contex,index) {
+                    return ListTile(
+                      title: Text(snapshot.data!.docs[index]['title'].toString()),
+                      subtitle: Text(snapshot.data!.docs[index]['subtitle'].toString()),
+                    );
+                  }),
+              );
+            },
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddPostScreen()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddFirestoreDataScreen()));
         },
         child: Icon(Icons.add),
       ),
@@ -282,15 +258,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             TextButton(
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
-                                    databaseRef.child(id).update({
-                                      'title': _postEditController.text,
-                                      'subtitle': _postEditSubController.text,
-                                    }).then((value) {
-                                      Utils().toastMessage("Post Update");
-                                      Navigator.pop(context);
-                                    }).onError((error, stackTrace) {
-                                      Utils().toastMessage(error.toString());
-                                    });
+                                    // databaseRef.child(id).update({
+                                    //   'title': _postEditController.text,
+                                    //   'subtitle': _postEditSubController.text,
+                                    // }).then((value) {
+                                    //   Utils().toastMessage("Post Update");
+                                    //   Navigator.pop(context);
+                                    // }).onError((error, stackTrace) {
+                                    //   Utils().toastMessage(error.toString());
+                                    // });
                                   }
                                 },
                                 child: Text("Update")),
@@ -306,32 +282,3 @@ class _HomeScreenState extends State<HomeScreen> {
         });
   }
 }
-
-
-
-
-          // Expanded(
-          //     child: StreamBuilder(
-          //   stream: databaseRef.onValue,
-          //   builder: ((context, AsyncSnapshot<DatabaseEvent> snapshot) {
-          //     if (!snapshot.hasData) {
-          //       return CircularProgressIndicator();
-          //     } else {
-          //       Map<dynamic, dynamic> map =
-          //           snapshot.data!.snapshot.value as dynamic;
-          //       List<dynamic> list = [];
-          //       list.clear();
-          //       list = map.values.toList();
-
-          //       return ListView.builder(
-          //         itemCount: snapshot.data!.snapshot.children.length,
-          //         itemBuilder: ((context, index) {
-          //           return ListTile(
-          //             title: Text(list[index]['title']),
-          //             subtitle: Text(list[index]['id']),
-          //           );
-          //         }),
-          //       );
-          //     }
-          //   }),
-          // )),

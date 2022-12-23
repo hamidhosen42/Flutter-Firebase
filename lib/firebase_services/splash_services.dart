@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/ui/auth/login_screen.dart';
-import 'package:flutter_firebase/ui/HomePage/home_screen.dart';
+import 'package:flutter_firebase/ui/home_screen.dart';
 
 class SplashServices {
   static Color appBarColor = Colors.green;
