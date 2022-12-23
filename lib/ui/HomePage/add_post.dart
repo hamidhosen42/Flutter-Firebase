@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, unused_field, unused_local_variable
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +17,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   bool loading = false;
   final _formKey = GlobalKey<FormState>();
   final _postController = TextEditingController();
+  final _postSubController = TextEditingController();
 
   final databaseRef = FirebaseDatabase.instance.ref('Post');
 
@@ -36,32 +37,66 @@ class _AddPostScreenState extends State<AddPostScreen> {
             ),
             Form(
               key: _formKey,
-              child: TextFormField(
-                maxLines: 4,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Enter Text";
-                  } else {
-                    return null;
-                  }
-                },
-                controller: _postController,
-                decoration: InputDecoration(
-                  hintText: 'What is in your mind?',
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              child: Column(
+                children: [
+                  TextFormField(
+                    maxLines: 2,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Enter Text";
+                      } else {
+                        return null;
+                      }
+                    },
+                    controller: _postController,
+                    decoration: InputDecoration(
+                      hintText: 'What is in your mind?',
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 20.0, horizontal: 20.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green, width: 1.0),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green, width: 2.0),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                    ),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.green, width: 1.0),
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  SizedBox(
+                    height: 20,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.green, width: 2.0),
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  TextFormField(
+                    maxLines: 4,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Enter Text";
+                      } else {
+                        return null;
+                      }
+                    },
+                    controller: _postSubController,
+                    decoration: InputDecoration(
+                      hintText: 'Description',
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 20.0, horizontal: 20.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green, width: 1.0),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green, width: 2.0),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
             SizedBox(
@@ -72,9 +107,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 setState(() {
                   loading = true;
                 });
-                databaseRef.child(DateTime.now().microsecondsSinceEpoch.toString()).set({
-                  'id': DateTime.now().microsecondsSinceEpoch.toString(),
+
+                String id = DateTime.now().microsecondsSinceEpoch.toString();
+
+                databaseRef.child(id).set({
+                  'id': id,
                   'title': _postController.text,
+                  'subtitle': _postSubController.text,
                 }).then((value) {
                   Utils().toastMessage("Post Added");
                   setState(() {
