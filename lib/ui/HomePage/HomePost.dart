@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, unused_local_variable, unnecessary_string_interpolations, avoid_unnecessary_containers, unused_import
 
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
@@ -8,8 +10,10 @@ import 'package:flutter_firebase/ui/HomePage/add_post.dart';
 import 'package:flutter_firebase/ui/auth/login_screen.dart';
 import 'package:flutter_firebase/ui/firestore/firestore_list_screen.dart';
 import 'package:flutter_firebase/utils/utils.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../widgets/round_button.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class HomePost extends StatefulWidget {
   @override
@@ -24,6 +28,22 @@ class _HomePostState extends State<HomePost> {
   final _postEditSubController = TextEditingController();
 
   final databaseRef = FirebaseDatabase.instance.ref('Post');
+
+  File? _image;
+  final _picker = ImagePicker();
+
+  Future getImageGally() async {
+    final pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print("No Image Picked");
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,13 +79,6 @@ class _HomePostState extends State<HomePost> {
             child: TextFormField(
               onChanged: (String value) {
                 setState(() {});
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "Enter Password";
-                } else {
-                  return null;
-                }
               },
               controller: searchFilter,
               keyboardType: TextInputType.text,
@@ -103,6 +116,7 @@ class _HomePostState extends State<HomePost> {
                 final title = snapshot.child("title").value.toString();
                 final subtitle = snapshot.child("subtitle").value.toString();
                 final id = snapshot.child('id').value.toString();
+                final image = snapshot.child('image').value.toString();
 
                 if (searchFilter.text.isEmpty) {
                   return SizeTransition(
@@ -110,6 +124,10 @@ class _HomePostState extends State<HomePost> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: NetworkImage(image),
+                          radius: 20,
+                        ),
                         trailing: PopupMenuButton(
                             icon: Icon(Icons.more_vert),
                             itemBuilder: (context) => [
@@ -118,7 +136,8 @@ class _HomePostState extends State<HomePost> {
                                     child: ListTile(
                                       onTap: () {
                                         Navigator.pop(context);
-                                        showMyDialog(title, subtitle, id);
+                                        showMyDialog(
+                                            title, subtitle, id, image);
                                       },
                                       leading: Icon(Icons.edit),
                                       title: Text("Edit"),
@@ -135,7 +154,8 @@ class _HomePostState extends State<HomePost> {
                                           Utils().toastMessage("Post Deleted");
                                           Navigator.pop(context);
                                         }).onError((error, stackTrace) {
-                                          Utils().toastMessage(error.toString());
+                                          Utils()
+                                              .toastMessage(error.toString());
                                         });
                                       },
                                       leading: Icon(Icons.delete),
@@ -147,7 +167,6 @@ class _HomePostState extends State<HomePost> {
                             Text('${snapshot.child('title').value.toString()}'),
                         subtitle:
                             Text(snapshot.child("subtitle").value.toString()),
-                          
                       ),
                     ),
                   );
@@ -182,125 +201,161 @@ class _HomePostState extends State<HomePost> {
     );
   }
 
-  Future<void> showMyDialog(String title, String subtitle, String id) async {
+  Future<void> showMyDialog(
+      String title, String subtitle, String id, String image) async {
     _postEditController.text = title;
     _postEditSubController.text = subtitle;
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Center(child: Text("Update Post")),
-            content: Container(
-              child: Column(
-                children: [
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        TextFormField(
-                          maxLines: 2,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Enter Text";
-                            } else {
-                              return null;
-                            }
-                          },
-                          controller: _postEditController,
-                          decoration: InputDecoration(
-                            hintText: 'What is in your mind?',
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 20.0, horizontal: 20.0),
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.green, width: 1.0),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.green, width: 2.0),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        TextFormField(
-                          maxLines: 6,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Enter Text";
-                            } else {
-                              return null;
-                            }
-                          },
-                          controller: _postEditSubController,
-                          decoration: InputDecoration(
-                            hintText: 'Description',
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 20.0, horizontal: 20.0),
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.green, width: 1.0),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.green, width: 2.0),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
+          return SingleChildScrollView(
+            child: AlertDialog(
+              title: Center(child: Text("Update Post")),
+              content: Container(
+                child: Column(
+                  children: [
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          TextFormField(
+                            maxLines: 2,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter Text";
+                              } else {
+                                return null;
+                              }
+                            },
+                            controller: _postEditController,
+                            decoration: InputDecoration(
+                              hintText: 'What is in your mind?',
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 20.0, horizontal: 20.0),
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.green, width: 1.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.green, width: 2.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text("Cancle")),
-                            SizedBox(
-                              width: 10,
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            maxLines: 6,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter Text";
+                              } else {
+                                return null;
+                              }
+                            },
+                            controller: _postEditSubController,
+                            decoration: InputDecoration(
+                              hintText: 'Description',
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 20.0, horizontal: 20.0),
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.green, width: 1.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.green, width: 2.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
                             ),
-                            TextButton(
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    databaseRef.child(id).update({
-                                      'title': _postEditController.text,
-                                      'subtitle': _postEditSubController.text,
-                                    }).then((value) {
-                                      Utils().toastMessage("Post Update");
-                                      Navigator.pop(context);
-                                    }).onError((error, stackTrace) {
-                                      Utils().toastMessage(error.toString());
-                                    });
-                                  }
-                                },
-                                child: Text("Update")),
-                          ],
-                        )
-                      ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              getImageGally();
+                            },
+                            child: Container(
+                              height: 100,
+                              // width: 100,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.green)),
+                              child: _image != null
+                                  ? Image.file(_image!.absolute)
+                                  : Center(child: Icon(Icons.image))
+                                  ,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("Cancle")),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              TextButton(
+                                  onPressed: () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      firebase_storage.Reference ref =
+                                          firebase_storage
+                                              .FirebaseStorage.instance
+                                              .ref('/hamid/' + id);
+                                      firebase_storage.UploadTask uploadTask =
+                                          ref.putFile(_image!.absolute);
+
+                                      await Future.value(uploadTask)
+                                          .then((value) async {
+                                        var newUrl = await ref.getDownloadURL();
+                                        databaseRef.child(id).update({
+                                          'title': _postEditController.text,
+                                          'subtitle':
+                                              _postEditSubController.text,
+                                          'image': newUrl.toString()
+                                        }).then((value) {
+                                          Utils().toastMessage("Post Update");
+                                          Navigator.pop(context);
+                                        }).onError((error, stackTrace) {
+                                          Utils()
+                                              .toastMessage(error.toString());
+                                        });
+                                      });
+                                    }
+                                  },
+                                  child: Text("Update")),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

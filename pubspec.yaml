@@ -44,6 +44,7 @@ dependencies:
   flutter_screenutil: 
   fluttertoast: 
   firebase_database: 
+  image_picker: 
 
 dev_dependencies:
   flutter_test:

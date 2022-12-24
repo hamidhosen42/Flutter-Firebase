@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations
+// ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations, avoid_unnecessary_containers, unused_local_variable
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -71,13 +71,6 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
               onChanged: (String value) {
                 setState(() {});
               },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "Enter Password";
-                } else {
-                  return null;
-                }
-              },
               controller: searchFilter,
               keyboardType: TextInputType.text,
               obscureText: true,
@@ -133,13 +126,63 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
 
               return Expanded(
                 child: ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder:(contex,index) {
-                    return ListTile(
-                      title: Text(snapshot.data!.docs[index]['title'].toString()),
-                      subtitle: Text(snapshot.data!.docs[index]['subtitle'].toString()),
-                    );
-                  }),
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (contex, index) {
+                      final id = snapshot.data!.docs[index]['id'].toString();
+                      final title =
+                          snapshot.data!.docs[index]['title'].toString();
+                      final subtitle =
+                          snapshot.data!.docs[index]['subtitle'].toString();
+                          DocumentSnapshot image = snapshot.data!.docs[index];
+                      return ListTile(
+                        trailing: PopupMenuButton(
+                            icon: Icon(Icons.more_vert),
+                            itemBuilder: (context) => [
+                              
+                                  PopupMenuItem(
+                                    value: 1,
+                                    child: ListTile(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        showMyDialog(title, subtitle, id);
+                                      },
+                                      leading: Icon(Icons.edit),
+                                      title: Text("Edit"),
+                                    ),
+                                    // ignore: dead_code
+                                  ),
+                                  PopupMenuItem(
+                                    value: 1,
+                                    child: ListTile(
+                                      onTap: () {
+                                        FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(id)
+                                            .delete()
+                                            .then((value) {
+                                          Utils().toastMessage("Post Deleted");
+                                          Navigator.pop(context);
+                                        }).onError((error, stackTrace) {
+                                          Utils()
+                                              .toastMessage(error.toString());
+                                        });
+                                      },
+                                      leading: Icon(Icons.delete),
+                                      title: Text("Delete"),
+                                    ),
+                                  )
+                                ]),
+                        title: Text(
+                            snapshot.data!.docs[index]['title'].toString()),
+                        subtitle: Text(
+                            snapshot.data!.docs[index]['subtitle'].toString()),
+                        // leading: CircleAvatar(
+                        //   backgroundImage: NetworkImage(
+                        //    image[''],
+                        //   ),
+                        // ),
+                      );
+                    }),
               );
             },
           ),
@@ -166,116 +209,121 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
           return AlertDialog(
             title: Center(child: Text("Update Post")),
             content: Container(
-              child: Column(
-                children: [
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        TextFormField(
-                          maxLines: 2,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Enter Text";
-                            } else {
-                              return null;
-                            }
-                          },
-                          controller: _postEditController,
-                          decoration: InputDecoration(
-                            hintText: 'What is in your mind?',
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 20.0, horizontal: 20.0),
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.green, width: 1.0),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.green, width: 2.0),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        TextFormField(
-                          maxLines: 6,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Enter Text";
-                            } else {
-                              return null;
-                            }
-                          },
-                          controller: _postEditSubController,
-                          decoration: InputDecoration(
-                            hintText: 'Description',
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 20.0, horizontal: 20.0),
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.green, width: 1.0),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.green, width: 2.0),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          TextFormField(
+                            maxLines: 2,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter Text";
+                              } else {
+                                return null;
+                              }
+                            },
+                            controller: _postEditController,
+                            decoration: InputDecoration(
+                              hintText: 'What is in your mind?',
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 20.0, horizontal: 20.0),
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.green, width: 1.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.green, width: 2.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text("Cancle")),
-                            SizedBox(
-                              width: 10,
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            maxLines: 6,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Enter Text";
+                              } else {
+                                return null;
+                              }
+                            },
+                            controller: _postEditSubController,
+                            decoration: InputDecoration(
+                              hintText: 'Description',
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 20.0, horizontal: 20.0),
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.green, width: 1.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.green, width: 2.0),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
                             ),
-                            TextButton(
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    // databaseRef.child(id).update({
-                                    //   'title': _postEditController.text,
-                                    //   'subtitle': _postEditSubController.text,
-                                    // }).then((value) {
-                                    //   Utils().toastMessage("Post Update");
-                                    //   Navigator.pop(context);
-                                    // }).onError((error, stackTrace) {
-                                    //   Utils().toastMessage(error.toString());
-                                    // });
-                                  }
-                                },
-                                child: Text("Update")),
-                          ],
-                        )
-                      ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("Cancle")),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(id)
+                                          .update({
+                                        'title': _postEditController.text,
+                                        'subtitle': _postEditSubController.text,
+                                      }).then((value) {
+                                        Utils().toastMessage("Update");
+                                        Navigator.pop(context);
+                                      }).onError((error, stackTrace) {
+                                        Utils().toastMessage(error.toString());
+                                      });
+                                    }
+                                  },
+                                  child: Text("Update")),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
