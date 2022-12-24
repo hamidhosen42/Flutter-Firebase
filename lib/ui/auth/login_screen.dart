@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase/firbase/auth.dart';
 import 'package:flutter_firebase/ui/auth/login_with_phone_number.dart';
 import 'package:flutter_firebase/ui/auth/signup_screen.dart';
+import 'package:flutter_firebase/ui/forgot_password.dart';
 import 'package:flutter_firebase/utils/utils.dart';
 import 'package:flutter_firebase/widgets/round_button.dart';
 import 'package:flutter_loading_animation_kit/flutter_loading_animation_kit.dart';
@@ -145,6 +146,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   login();
                 }
               }),
+
+              Align(
+                alignment: Alignment.bottomRight,
+                child: TextButton(onPressed: (){
+                   Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ForgotPasswordScreen()));
+                }, child: Text("Forgot Password?")),
+              ),
+              
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
