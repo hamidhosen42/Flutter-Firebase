@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         // backgroundColor: SplashServices.appBarColor,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         title: Text(
           "Login",
           style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
