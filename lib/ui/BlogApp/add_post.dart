@@ -1,9 +1,10 @@
-// ignore_for_file: prefer_const_constructors, unused_field
+// ignore_for_file: prefer_const_constructors, unused_field, sized_box_for_whitespace, prefer_const_literals_to_create_immutables, avoid_print
 
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/widgets/round_button.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddBlogPostScreen extends StatefulWidget {
   const AddBlogPostScreen({super.key});
@@ -19,6 +20,72 @@ class _AddBlogPostScreenState extends State<AddBlogPostScreen> {
   final _descriptionController = TextEditingController();
 
   File? _image;
+  final _picker = ImagePicker();
+
+    Future getImageGallery() async {
+    final pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print("No Image Picked");
+      }
+    });
+  }
+
+    Future getCamraImage() async {
+    final pickedFile =
+        await _picker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print("No Image Picked");
+      }
+    });
+  }
+
+  void dialog(contex){
+    showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0)
+        ),
+        content: Container(
+          height: 120,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              InkWell(
+                onTap: (){
+                  getCamraImage();
+                  Navigator.pop(context);
+                },
+                child: ListTile(
+                  leading: Icon(Icons.camera),
+                  title: Text("Camera"),
+                ),
+              ),
+              InkWell(
+                onTap: (){
+                  getImageGallery();
+                   Navigator.pop(context);
+                },
+                child: ListTile(
+                  leading: Icon(Icons.photo_library),
+                  title: Text("Gallery"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,17 +105,19 @@ class _AddBlogPostScreenState extends State<AddBlogPostScreen> {
               Center(
                 child: InkWell(
                   onTap: () {
-                    // getImageGally();
+                     dialog(context);
                   },
                   child: Container(
-                    height: h*0.2,
+                    height: h*0.3,
                     width: w*1,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.grey.shade400)),
                     child: _image != null
-                        ? Image.file(_image!.absolute)
+                        ? ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: Image.file(_image!.absolute,fit: BoxFit.fill,))
                         : Center(child: Icon(Icons.camera_alt)),
                   ),
                 ),
