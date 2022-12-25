@@ -157,7 +157,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   firebase_storage.UploadTask uploadTask =
                       ref.putFile(_image!.absolute);
         
-                  await Future.value(uploadTask).then((value) async {
+                  await Future.value(uploadTask). then((value) async {
                     var newUrl = await ref.getDownloadURL();
         
                     databaseRef.child(id).set({
