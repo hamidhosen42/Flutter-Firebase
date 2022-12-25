@@ -33,8 +33,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         // backgroundColor: SplashServices.appBarColor,
         // automaticallyImplyLeading: false,
         title: Text(
-          "SignUp",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          "Create Account",
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
         // leading: IconButton(
@@ -55,7 +55,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               FourCirclePulse(
                 circleColor: Colors.deepPurple, //The color of the circles
                 dimension: 100.0, // The size of the widget.
-                turns: 5, //Turns in each loop
+                turns: 10, //Turns in each loop
                 loopDuration:
                     const Duration(seconds: 5), // Duration of each loop
                 curve: Curves.linear, //Curve of the animation

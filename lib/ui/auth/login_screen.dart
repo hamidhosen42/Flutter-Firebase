@@ -46,18 +46,18 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             children: [
               SizedBox(
-                height: 80,
+                height: 50,
               ),
               FourCirclePulse(
                 circleColor: Colors.deepPurple, //The color of the circles
                 dimension: 100.0, // The size of the widget.
-                turns: 5, //Turns in each loop
+                turns: 10, //Turns in each loop
                 loopDuration:
                     const Duration(seconds: 5), // Duration of each loop
                 curve: Curves.linear, //Curve of the animation
               ),
               SizedBox(
-                height: 70.0,
+                height: 50.0,
               ),
               Form(
                 key: _formKey,
