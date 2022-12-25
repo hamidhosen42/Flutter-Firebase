@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/widgets/round_button.dart';
@@ -224,14 +225,19 @@ class _AddBlogPostScreenState extends State<AddBlogPostScreen> {
                   firebase_storage.UploadTask uploadTask =
                       ref.putFile(_image!.absolute);
 
+                  final user = FirebaseAuth.instance.currentUser;
+
                   await Future.value(uploadTask).then((value) async {
                     var newUrl = await ref.getDownloadURL();
 
                     databaseRef.child(id).set({
                       'id': id,
-                      'title': _titleController.text,
-                      'subtitle': _descriptionController.text,
                       'image': newUrl.toString(),
+                      'time':id,
+                      'title': _titleController.text,
+                      'description': _descriptionController.text,
+                      'email':user!.email.toString(),
+                      'uid':user.uid.toString()
                     }).then((value) {
                       Utils().toastMessage("Post Added");
                       setState(() {
