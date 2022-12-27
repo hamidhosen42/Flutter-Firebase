@@ -254,7 +254,7 @@ You can watch Flutter firebase Soical Media Application on my channel.
 
 
 ```
-SHA1 KeyWord commend =keytool -list -v -keystore C:\Users\user\.android\debug.keystore -alias androiddebugkey -storepass android -keypass android
+### SHA1 KeyWord commend =keytool -list -v -keystore C:\Users\user\.android\debug.keystore -alias androiddebugkey -storepass android -keypass android
 
 android->app->build.grad=
 1. multiDexEnabled true
