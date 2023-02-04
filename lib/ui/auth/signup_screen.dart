@@ -178,11 +178,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     Auth()
         .registration(_emailController.text, _passwordController.text, context)
         .then((value) {
-      loading = false;
+      setState(() {
+        loading=false;
+      });
     }).onError((error, stackTrace) {
       Utils().toastMessage(error.toString());
       setState(() {
-        loading = false;
+        loading =false;
       });
     });
   }

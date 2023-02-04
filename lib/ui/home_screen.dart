@@ -1,8 +1,8 @@
 // ignore_for_file: use_key_in_widget_constructors, must_be_immutable, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase/ui/BlogApp/blog_home_page.dart';
-import 'package:flutter_firebase/ui/HomePage/HomePost.dart';
+import 'package:flutter_firebase/ui/BlogApp-RealTime/blog_home_page.dart';
+import 'package:flutter_firebase/ui/real_time_store/real_time_screen.dart';
 import 'package:flutter_firebase/ui/firestore/firestore_list_screen.dart';
 import 'package:flutter_firebase/widgets/round_button.dart';
 

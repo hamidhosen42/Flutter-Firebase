@@ -3,7 +3,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/ui/auth/signup_screen.dart';
-import 'package:flutter_firebase/ui/HomePage/HomePost.dart';
+import 'package:flutter_firebase/ui/real_time_store/real_time_screen.dart';
 import 'package:flutter_firebase/ui/home_screen.dart';
 import 'package:flutter_firebase/utils/utils.dart';
 import 'package:flutter_firebase/widgets/round_button.dart';
