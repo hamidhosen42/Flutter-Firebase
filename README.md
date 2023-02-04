@@ -4,6 +4,7 @@
 <img src="./assets/7-otp_screen.png" width=200> <img src="./assets/8-real-time-data-screen.png" width=200> <img src="./assets/8.1-post_real_time_data.png" width=200> 
 <img src="./assets/9-real-time-data-post-screen.png" width=200> <img src="./assets/10-real-time-data-update-screen.png" width=200> <img src="./assets/11-add-firestore-data.png" width=200> <img src="./assets/12-firestore_screen.png" width=200> <img src="./assets/13-firstore_update_screen.png" width=200> <img src="./assets/13-real-time-blog-screen.png" width=200> <img src="./assets/14-real-time-blog-upload.png" width=200> 
 
+### [APK](https://github.com/hamidhosen42/Flutter-Firebase/blob/main/app-release.apk)
 ### dependencies:
 1. firebase_core: ^1.10.0
 2. firebase_auth: ^3.2.0
