@@ -45,6 +45,9 @@ dependencies:
   fluttertoast: 
   firebase_database: 
   image_picker: 
+  firebase_messaging: 
+  flutter_local_notifications: 
+  app_settings: 
 
 dev_dependencies:
   flutter_test:

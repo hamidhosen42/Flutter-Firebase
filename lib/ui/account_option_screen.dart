@@ -6,6 +6,8 @@ import 'package:flutter_firebase/ui/auth/signup_screen.dart';
 import 'package:flutter_firebase/widgets/round_button.dart';
 import 'package:flutter_loading_animation_kit/flutter_loading_animation_kit.dart';
 
+import '../Firebase-Notifications/my_home_screen.dart';
+
 class OptionScreen extends StatelessWidget {
   bool loading = false;
 
@@ -42,6 +44,13 @@ class OptionScreen extends StatelessWidget {
               RoundButton("Register", loading, () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => SignUpScreen()));
+              }),
+               SizedBox(
+                height: 20,
+              ),
+              RoundButton("Firebase-Notifications", loading, () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MyHomeScreen()));
               }),
             ],
           ),
