@@ -26,4 +26,17 @@ class NotificationServices {
       print('user denied permission');
     }
   }
+
+  //!function to get device token on which we will send the notifications Android and IOS work
+  Future<String> getDeviceToken() async {
+    String? token = await messaging.getToken();
+    return token!;
+  }
+
+  void isTokenRefresh()async{
+    messaging.onTokenRefresh.listen((event) {
+      event.toString();
+      print('Refresh');
+    });
+  }
 }
